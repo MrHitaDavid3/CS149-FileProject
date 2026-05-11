@@ -5,7 +5,8 @@
 #include <readline/readline.h>
 #include "globals.h"
 
-static int prefill_readline(void) {
+static int prefill_readline(const char *text, int state) {
+    (void)text; (void)state;
     rl_insert_text(global_buffer);
     rl_redisplay();
     return 0;
