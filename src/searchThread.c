@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include "globals.h"
+
 void *search_thread(void *arg) {
     while (1) {
         pthread_mutex_lock(&mutex);
@@ -24,10 +29,7 @@ void *search_thread(void *arg) {
             printf("File '%s' found at index %d.\n", current_filename, found);
         }
 
-        current_command = NONE;
-
         pthread_cond_signal(&cond);
-
         pthread_mutex_unlock(&mutex);
     }
 
