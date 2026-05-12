@@ -22,11 +22,6 @@ void *close_thread(void *arg);
 void *search_thread(void *arg);
 
 bool read_line(char *buffer, int size) {
-    if (fgets(buffer, size, stdin) == NULL) { // EOF or error
-        printf("Input reading aborted.");
-        return false;
-    }
-
     if (strchr(buffer, '\n') == NULL) { // input too long
         int ch;
         while ((ch = getchar()) != '\n' && ch != EOF); // clear remaining input
