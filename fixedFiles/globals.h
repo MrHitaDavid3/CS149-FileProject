@@ -36,6 +36,6 @@ extern int current_file_index;
 
 extern char global_buffer[MAX_CONTENT];
 
-extern bool search_requested_by_open;
+extern bool search_done;
 
 #endif
