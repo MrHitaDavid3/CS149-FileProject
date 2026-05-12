@@ -22,18 +22,13 @@ void *close_thread(void *arg);
 void *search_thread(void *arg);
 
 bool read_line(char *buffer, int size) {
-    if (fgets(buffer, size, stdin) == NULL) { // Deal with EOF
+    if (fgets(buffer, size, stdin) == NULL) {
+        printf("\nInput ignored.\n");
         clearerr(stdin);
         return false;
     }
     
     if (strchr(buffer, '\n') == NULL) { 
-        if (feof(stdin)) { // Ctrl + D after typing
-            clearerr(stdin);
-            printf("\nInput ignored.\n");
-            return false;
-        }
-        
         int ch;
         while ((ch = getchar()) != '\n' && ch != EOF); // Input too long, clear remaining input
         printf("Invalid command.\n");
