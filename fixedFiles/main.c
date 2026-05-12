@@ -91,7 +91,12 @@ int main(void) {
             while(!search_done) {
                 pthread_cond_wait(&cond, &mutex);
             }
-            current_command = OPEN;
+            if (current_file_index == -1){
+                printf("File does not exist.");
+            }
+            else {
+                current_command = OPEN;
+            }
         } 
         else if (strcmp(cmd_input, "search") == 0) {
             search_done = false;
