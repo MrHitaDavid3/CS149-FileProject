@@ -4,12 +4,13 @@
 #include "globals.h"
 
 void *search_thread(void *arg) {
+    (void)arg;
+
     while (1) {
         pthread_mutex_lock(&mutex);
 
         if (current_command != SEARCH) {
             pthread_mutex_unlock(&mutex);
-            sleep(1);
             continue;
         }
 
@@ -22,14 +23,9 @@ void *search_thread(void *arg) {
         }
 
         current_file_index = found;
-
-        if (found == -1) {
-            printf("File '%s' not found.\n", current_filename);
-        } else {
-            printf("File '%s' found at index %d.\n", current_filename, found);
-        }
-
+        search_done = true;
         pthread_cond_signal(&cond);
+
         pthread_mutex_unlock(&mutex);
     }
 
