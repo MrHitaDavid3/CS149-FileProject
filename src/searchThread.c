@@ -24,6 +24,7 @@ void *search_thread(void *arg) {
 
         current_file_index = found;
         search_done = true;
+        current_command = NONE;
         pthread_cond_signal(&cond);
 
         pthread_mutex_unlock(&mutex);
