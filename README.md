@@ -1,3 +1,9 @@
 # CS149-FileProject
+REQUIREMENT:
+sudo apt install libreadline-dev
+
 How to compile:
-gcc -Wall -Wextra -pthread main.c createThread.c openThread.c closeThread.c searchThread.c -lreadline -o filemgmt
+make
+
+How to run:
+./fileproject
