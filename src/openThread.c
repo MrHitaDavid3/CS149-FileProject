@@ -34,7 +34,7 @@ void *open_thread(void *arg) {
         initial_text = global_buffer;
         rl_startup_hook = prefill_hook;
         
-        char *edited = readline("");
+        char *edited = readline("> ");
 
         rl_startup_hook = NULL;
 
