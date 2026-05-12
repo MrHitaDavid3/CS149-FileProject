@@ -29,7 +29,7 @@ void *open_thread(void *arg) {
         strncpy(global_buffer, files[current_file_index].content, MAX_CONTENT - 1);
         global_buffer[MAX_CONTENT - 1] = '\0';
 
-        printf("Edit file and press. Enter to save and close. Ctrl + D to close without saving.\n");
+        printf("Edit file and press. Enter to save and close. Clear input and ctrl + D to close without saving.\n");
 
         initial_text = global_buffer;
         rl_startup_hook = prefill_hook;
