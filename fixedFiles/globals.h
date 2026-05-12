@@ -7,6 +7,7 @@
 #define MAX_FILES 100
 #define MAX_FILENAME 50
 #define MAX_CONTENT 1024
+#define MAX_CMD_INPUT 10
 
 typedef enum {
     NONE,
