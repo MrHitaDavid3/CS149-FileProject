@@ -24,14 +24,13 @@ void *search_thread(void *arg);
 bool read_line(char *buffer, int size) {
     if (fgets(buffer, size, stdin) == NULL) { // Deal with EOF
         clearerr(stdin);
-        printf("\n");
         return false;
     }
     
     if (strchr(buffer, '\n') == NULL) { 
         if (feof(stdin)) { // Ctrl + D after typing
             clearerr(stdin);
-            printf("Input ignored.\n");
+            printf("\nInput ignored.\n");
             return false;
         }
         
