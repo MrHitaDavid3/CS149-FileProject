@@ -14,19 +14,29 @@ char current_filename[MAX_FILENAME] = "";
 int current_file_index = -1;
 
 char global_buffer[MAX_CONTENT] = "";
-
-int search_requested_by_open = 0;
+bool search_done = false;
 
 void *create_thread(void *arg);
 void *open_thread(void *arg);
 void *close_thread(void *arg);
 void *search_thread(void *arg);
 
-void clear_input_buffer(void) {
-    int ch;
-
-    while ((ch = getchar()) != '\n' && ch != EOF) {
+bool read_line(char *buffer, int size) {
+    if (fgets(buffer, size, stdin) == NULL) { // EOF or error
+        printf("Input reading aborted.");
+        return false;
     }
+
+    if (strchr(buffer, '\n') == NULL) { // input too long
+        int ch;
+        while ((ch = getchar()) != '\n' && ch != EOF); // clear remaining input
+        printf("Input too long.");
+        return false;
+    }
+
+    buffer[strcspn(buffer, "\n")] = '\0'; // remove newline
+    
+    return true;
 }
 
 int main(void) {
@@ -43,74 +53,60 @@ int main(void) {
     pthread_create(&t_close, NULL, close_thread, NULL);
     pthread_create(&t_search, NULL, search_thread, NULL);
 
-    char cmd_input[20];
+    char cmd_input[MAX_CMD_INPUT];
 
     while (1) {
         pthread_mutex_lock(&mutex);
 
         if (current_command != NONE) {
             pthread_mutex_unlock(&mutex);
-            sleep(1);
             continue;
         }
 
         printf("\nCommands: create, open, search, exit\n");
+        
         printf("Enter command: ");
-
-        if (scanf("%19s", cmd_input) != 1) {
-            clear_input_buffer();
+        if (read_line(cmd_input, MAX_CMD_INPUT) == false) {
             pthread_mutex_unlock(&mutex);
             continue;
         }
-
-        clear_input_buffer();
 
         if (strcmp(cmd_input, "exit") == 0) {
             pthread_mutex_unlock(&mutex);
             break;
         }
 
+        printf("Enter filename: ");
+        if (read_line(current_filename, MAX_FILENAME) == false) {
+            pthread_mutex_unlock(&mutex);
+            continue;
+        }
+
         if (strcmp(cmd_input, "create") == 0) {
-            printf("Enter filename: ");
-
-            if (scanf("%49s", current_filename) != 1) {
-                clear_input_buffer();
-                pthread_mutex_unlock(&mutex);
-                continue;
-            }
-
-            clear_input_buffer();
-
-            current_file_index = -1;
             current_command = CREATE;
-        } else if (strcmp(cmd_input, "open") == 0) {
-            printf("Enter filename: ");
-
-            if (scanf("%49s", current_filename) != 1) {
-                clear_input_buffer();
-                pthread_mutex_unlock(&mutex);
-                continue;
-            }
-
-            clear_input_buffer();
-
-            current_file_index = -1;
-            current_command = OPEN;
-        } else if (strcmp(cmd_input, "search") == 0) {
-            printf("Enter filename: ");
-
-            if (scanf("%49s", current_filename) != 1) {
-                clear_input_buffer();
-                pthread_mutex_unlock(&mutex);
-                continue;
-            }
-
-            clear_input_buffer();
-
-            current_file_index = -1;
-            search_requested_by_open = 0;
+        } 
+        else if (strcmp(cmd_input, "open") == 0) {
+            search_done = false;
             current_command = SEARCH;
-        } else {
+            while(!search_done) {
+                pthread_cond_wait(&cond, &mutex);
+            }
+            current_command = OPEN;
+        } 
+        else if (strcmp(cmd_input, "search") == 0) {
+            search_done = false;
+            current_command = SEARCH;
+            while(!search_done) {
+                pthread_cond_wait(&cond, &mutex);
+            }
+            if (current_file_index == -1){
+                printf("File does not exist.");                
+            }
+            else {
+                printf("File exists.");
+            }
+        } 
+        else {
             printf("Invalid command.\n");
         }
 
