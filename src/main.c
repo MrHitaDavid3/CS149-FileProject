@@ -92,7 +92,7 @@ int main(void) {
                 pthread_cond_wait(&cond, &mutex);
             }
             if (current_file_index == -1){
-                printf("File does not exist.");
+                printf("File does not exist.\n");
             }
             else {
                 current_command = OPEN;
@@ -105,10 +105,10 @@ int main(void) {
                 pthread_cond_wait(&cond, &mutex);
             }
             if (current_file_index == -1){
-                printf("File does not exist.");                
+                printf("File does not exist.\n");                
             }
             else {
-                printf("File exists.");
+                printf("File exists.\n");
             }
         } 
         else {
