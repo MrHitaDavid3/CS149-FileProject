@@ -27,9 +27,15 @@ bool read_line(char *buffer, int size) {
         return false;
     }
     
-    if (strchr(buffer, '\n') == NULL) { // input too long
+    if (strchr(buffer, '\n') == NULL) { 
+        if (feof(stdin)) { // Ctrl + D after typing
+            clearerr(stdin);
+            printf("Input ignored.\n");
+            return false;
+        }
+        
         int ch;
-        while ((ch = getchar()) != '\n' && ch != EOF); // clear remaining input
+        while ((ch = getchar()) != '\n' && ch != EOF); // Input too long, clear remaining input
         printf("Invalid command.\n");
         return false;
     }
