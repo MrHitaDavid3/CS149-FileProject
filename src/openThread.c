@@ -10,7 +10,6 @@ static char *initial_text = NULL;
 int prefill_hook(void) {
     if (initial_text) {
         rl_insert_text(initial_text);
-        rl_redisplay();
         initial_text = NULL;
     }
     return 0;
@@ -35,7 +34,7 @@ void *open_thread(void *arg) {
         initial_text = global_buffer;
         rl_startup_hook = prefill_hook;
         
-        char *edited = readline("> ");
+        char *edited = readline("");
 
         rl_startup_hook = NULL;
 
