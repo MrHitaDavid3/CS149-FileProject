@@ -5,6 +5,17 @@
 #include <readline/readline.h>
 #include "globals.h"
 
+static char *initial_text = NULL;
+
+int prefill_hook(void) {
+    if (initial_text) {
+        rl_insert_text(initial_text);
+        rl_redisplay();
+        initial_text = NULL;
+    }
+    return 0;
+}
+
 void *open_thread(void *arg) {
     (void)arg;
 
@@ -13,47 +24,23 @@ void *open_thread(void *arg) {
 
         if (current_command != OPEN) {
             pthread_mutex_unlock(&mutex);
-            sleep(1);
-            continue;
-        }
-
-        search_requested_by_open = 1;
-        current_command = SEARCH;
-
-        pthread_cond_wait(&cond, &mutex);
-
-        search_requested_by_open = 0;
-
-        if (current_file_index == -1) {
-            current_command = NONE;
-            current_filename[0] = '\0';
-            current_file_index = -1;
-
-            pthread_mutex_unlock(&mutex);
             continue;
         }
 
         strncpy(global_buffer, files[current_file_index].content, MAX_CONTENT - 1);
         global_buffer[MAX_CONTENT - 1] = '\0';
 
-        printf("\nOpening file '%s'.\n", files[current_file_index].name);
+        printf("Edit file and press. Enter to save and close. Ctrl + D to close without saving.\n");
 
-        if (strlen(global_buffer) > 0) {
-            printf("Current file content:\n%s\n", global_buffer);
-        } else {
-            printf("Current file content is empty.\n");
-        }
-
-        printf("Enter new content and press Enter to save and close.\n");
-
+        initial_text = global_buffer;
+        rl_startup_hook = prefill_hook;
+        
         char *edited = readline("> ");
 
-        if (edited == NULL) {
-            printf("Edit cancelled.\n");
+        rl_startup_hook = NULL;
 
+        if (edited == NULL) {
             current_command = NONE;
-            current_filename[0] = '\0';
-            current_file_index = -1;
 
             pthread_mutex_unlock(&mutex);
             continue;
