@@ -2,10 +2,12 @@
 #define GLOBALS_H
 
 #include <pthread.h>
+#include <stdbool.h>
 
 #define MAX_FILES 100
 #define MAX_FILENAME 50
 #define MAX_CONTENT 1024
+#define MAX_CMD_INPUT 10
 
 typedef enum {
     NONE,
@@ -33,5 +35,7 @@ extern char current_filename[MAX_FILENAME];
 extern int current_file_index;
 
 extern char global_buffer[MAX_CONTENT];
+
+extern bool search_done;
 
 #endif
