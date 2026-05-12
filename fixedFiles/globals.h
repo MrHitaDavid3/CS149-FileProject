@@ -2,6 +2,7 @@
 #define GLOBALS_H
 
 #include <pthread.h>
+#include <stdbool.h>
 
 #define MAX_FILES 100
 #define MAX_FILENAME 50
@@ -34,6 +35,6 @@ extern int current_file_index;
 
 extern char global_buffer[MAX_CONTENT];
 
-extern int search_requested_by_open;
+extern bool search_requested_by_open;
 
 #endif
