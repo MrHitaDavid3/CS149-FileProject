@@ -24,13 +24,14 @@ void *search_thread(void *arg);
 bool read_line(char *buffer, int size) {
     if (fgets(buffer, size, stdin) == NULL) { // Deal with EOF
         clearerr(stdin);
+        printf("Input ignored.\n");
         return false;
     }
     
     if (strchr(buffer, '\n') == NULL) { // input too long
         int ch;
         while ((ch = getchar()) != '\n' && ch != EOF); // clear remaining input
-        printf("Invalid command.");
+        printf("Invalid command.\n");
         return false;
     }
 
